@@ -12,7 +12,7 @@ const UserHeaderResizer = ({
 			<div
 				onMouseDown={resizeHandler()}
 				onTouchStart={resizeHandler()}
-				className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none bg-transparent hover:bg-blue-500"
+				className="absolute right-[-2px] top-0 h-full w-1 cursor-col-resize select-none bg-transparent hover:bg-blue-500"
 			/>
 		)
 	);

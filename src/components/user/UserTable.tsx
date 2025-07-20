@@ -7,18 +7,26 @@ import {
 	getCoreRowModel,
 	type SortingState,
 	getSortedRowModel,
+	type ColumnFiltersState,
 } from "@tanstack/react-table";
 import { TABLE_COLUMNS } from "@src/lib/constants";
 import UserRows from "./UserRows";
 import { UserHeader } from "./header";
 
 export default function UserTable() {
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([
 		{ id: "lastName", desc: false },
 	]);
 
+	console.log(columnFilters);
+
 	const [skip, setSkip] = useState(0);
-	const { userData, isError, isLoading } = useFetchUsers(sorting, skip);
+	const { userData, isError, isLoading } = useFetchUsers(
+		sorting,
+		columnFilters,
+		skip
+	);
 
 	const table = useReactTable({
 		data: userData?.users ?? [],
@@ -27,13 +35,23 @@ export default function UserTable() {
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		manualSorting: true,
-		state: { sorting },
+		manualFiltering: true,
+
+		state: { sorting, columnFilters },
 		onSortingChange: setSorting,
+		onColumnFiltersChange: (filters) => {
+			const resolvedFilters =
+				typeof filters === "function" ? filters(columnFilters) : filters;
+
+			const last = resolvedFilters[resolvedFilters.length - 1];
+			setColumnFilters(last ? [last] : []);
+			setSkip(0);
+		},
 	});
 
-	if (isLoading) {
-		return <div>Загрузка!!!</div>;
-	}
+	// if (isLoading) {
+	// 	return <div>Загрузка!!!</div>;
+	// }
 
 	if (isError) {
 		return <div>Произошла ошибка при получении данных!</div>;

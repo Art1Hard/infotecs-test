@@ -40,17 +40,20 @@ export const TABLE_COLUMNS = [
 		size: 300,
 		maxSize: 500,
 		enableSorting: false,
+		enableColumnFilter: false,
 	}),
 	columnHelper.accessor("address.country", {
 		header: "Страна",
 		minSize: 50,
 		maxSize: 500,
 		enableSorting: false,
+		enableColumnFilter: false,
 	}),
 	columnHelper.accessor("address.city", {
 		header: "Город",
 		minSize: 50,
 		maxSize: 500,
 		enableSorting: false,
+		enableColumnFilter: false,
 	}),
 ];

@@ -3,6 +3,7 @@ import { flexRender, type HeaderGroup } from "@tanstack/react-table";
 import cn from "clsx";
 import UserHeaderSort from "./UserHeaderSort";
 import UserHeaderResizer from "./UserHeaderResizer";
+import UserHeaderFilter from "./UserHeaderFilter";
 
 interface UserHeaderProps {
 	headerGroup: HeaderGroup<IUser>[];
@@ -16,15 +17,16 @@ const UserHeader = ({ headerGroup }: UserHeaderProps) => {
 					key={header.id}
 					colSpan={header.colSpan}
 					style={{ width: header.getSize() }}
-					className={cn(
-						"relative text-center text-sm border py-2 px-1 text-gray-700 font-semibold break-all border-gray-300",
-						header.column.getCanSort() && "cursor-pointer"
-					)}
+					className="relative text-center text-sm border py-2 px-1 text-gray-700 font-semibold break-all border-gray-300"
 					title={
 						header.column.getCanSort() ? "Нажмите для сортировки" : undefined
-					}
-					onClick={header.column.getToggleSortingHandler()}>
-					<div className="flex justify-center items-center gap-x-2">
+					}>
+					<div
+						className={cn(
+							"flex justify-center items-center gap-x-2 mb-2",
+							header.column.getCanSort() && "cursor-pointer"
+						)}
+						onClick={header.column.getToggleSortingHandler()}>
 						{flexRender(header.column.columnDef.header, header.getContext())}
 
 						<UserHeaderSort
@@ -32,6 +34,12 @@ const UserHeader = ({ headerGroup }: UserHeaderProps) => {
 							canSort={header.column.getCanSort()}
 						/>
 					</div>
+
+					<UserHeaderFilter
+						canFilter={header.column.getCanFilter()}
+						getFilterValue={header.column.getFilterValue}
+						setFilterValue={header.column.setFilterValue}
+					/>
 
 					<UserHeaderResizer
 						canResize={header.column.getCanResize()}

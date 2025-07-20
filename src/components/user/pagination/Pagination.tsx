@@ -14,16 +14,18 @@ const Pagination = ({ totalPages, skip, onPageChange }: PaginationProps) => {
 	return (
 		<tr>
 			<td colSpan={9} className="py-3 px-6">
-				<ul className="flex items-center justify-center gap-x-4 text-md font-bold">
-					<li>
-						<PaginationButton
-							disabled={currentPage <= 1}
-							onClick={() => {
-								onPageChange(onPageDecrement());
-							}}>
-							&lt;
-						</PaginationButton>
-					</li>
+				<ul className="flex items-center justify-center gap-x-3 text-md font-bold">
+					{currentPage > 1 && (
+						<li>
+							<PaginationButton
+								onClick={() => {
+									onPageChange(onPageDecrement());
+								}}>
+								&lt;
+							</PaginationButton>
+						</li>
+					)}
+
 					{pages.map((page) => (
 						<li key={page}>
 							<PaginationButton
@@ -33,14 +35,13 @@ const Pagination = ({ totalPages, skip, onPageChange }: PaginationProps) => {
 							</PaginationButton>
 						</li>
 					))}
-
-					<li>
-						<PaginationButton
-							disabled={currentPage === totalPages}
-							onClick={() => onPageChange(onPageIncrement())}>
-							&gt;
-						</PaginationButton>
-					</li>
+					{currentPage < totalPages && (
+						<li>
+							<PaginationButton onClick={() => onPageChange(onPageIncrement())}>
+								&gt;
+							</PaginationButton>
+						</li>
+					)}
 				</ul>
 			</td>
 		</tr>

@@ -6,6 +6,15 @@ interface UserListProps {
 }
 
 const UserRows = ({ rows }: UserListProps) => {
+	if (rows.length <= 0)
+		return (
+			<tr>
+				<td colSpan={9} className="py-4 text-center text-sm">
+					Фильтр ничего не нашёл...
+				</td>
+			</tr>
+		);
+
 	return rows.map((row) => (
 		<tr
 			key={row.id}
