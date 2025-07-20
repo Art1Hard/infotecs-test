@@ -1,24 +1,25 @@
 import type { IUserDataResponse } from "@src/lib/types/user";
 import { useEffect, useState } from "react";
 import { LIMIT } from "@lib/config";
+import type { SortingState } from "@tanstack/react-table";
 
 const getUrlWithParams = (
 	limit: number,
 	skip: number,
-	order: Record<string, string>
+	sorting: SortingState
 ) => {
 	let url = `https://dummyjson.com/users?limit=${limit}`;
 	if (skip !== 0) {
 		url += `&skip=${skip}`;
 	}
-	if (order.order !== "none") {
-		url += `&sortBy=${order.type}&order=${order.order}`;
+	if (sorting.length > 0) {
+		url += `&sortBy=${sorting[0].id}&order=${sorting[0].desc ? "desc" : "asc"}`;
 	}
 
 	return url;
 };
 
-const useFetchUsers = (order: Record<string, string>, skip: number) => {
+const useFetchUsers = (sorting: SortingState, skip: number) => {
 	const [userData, setUserData] = useState<IUserDataResponse | null>(null);
 	const [isError, setIsError] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +29,7 @@ const useFetchUsers = (order: Record<string, string>, skip: number) => {
 			setIsError(false);
 			setIsLoading(true);
 
-			const url = getUrlWithParams(LIMIT, skip, order);
+			const url = getUrlWithParams(LIMIT, skip, sorting);
 
 			const response = await fetch(url);
 			const data = (await response.json()) as IUserDataResponse;
@@ -45,7 +46,7 @@ const useFetchUsers = (order: Record<string, string>, skip: number) => {
 	useEffect(() => {
 		fetchUsers();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [order, skip]);
+	}, [sorting, skip]);
 
 	return { userData, isError, isLoading };
 };

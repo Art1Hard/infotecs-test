@@ -1,31 +1,25 @@
 import PaginationButton from "./PaginationButton";
+import usePagination from "@src/lib/hooks/usePagination";
 
 interface PaginationProps {
 	totalPages: number;
-	currentPage: number;
-	onPageChange: (page: number) => void;
-	onPageIncrement: () => void;
-	onPageDecrement: () => void;
+	skip: number;
+	onPageChange: (skip: number) => void;
 }
 
-const Pagination = ({
-	totalPages,
-	currentPage,
-	onPageChange,
-	onPageIncrement,
-	onPageDecrement,
-}: PaginationProps) => {
-	const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const Pagination = ({ totalPages, skip, onPageChange }: PaginationProps) => {
+	const { pages, currentPage, onClickPage, onPageIncrement, onPageDecrement } =
+		usePagination(totalPages, skip);
 
 	return (
 		<tr>
 			<td colSpan={9} className="py-3 px-6">
-				<ul className="flex items-center justify-center gap-x-4 text-xl font-bold">
+				<ul className="flex items-center justify-center gap-x-4 text-md font-bold">
 					<li>
 						<PaginationButton
 							disabled={currentPage <= 1}
 							onClick={() => {
-								onPageDecrement();
+								onPageChange(onPageDecrement());
 							}}>
 							&lt;
 						</PaginationButton>
@@ -34,7 +28,7 @@ const Pagination = ({
 						<li key={page}>
 							<PaginationButton
 								disabled={currentPage === page}
-								onClick={() => onPageChange(page)}>
+								onClick={() => onPageChange(onClickPage(page))}>
 								{page}
 							</PaginationButton>
 						</li>
@@ -43,7 +37,7 @@ const Pagination = ({
 					<li>
 						<PaginationButton
 							disabled={currentPage === totalPages}
-							onClick={() => onPageIncrement()}>
+							onClick={() => onPageChange(onPageIncrement())}>
 							&gt;
 						</PaginationButton>
 					</li>

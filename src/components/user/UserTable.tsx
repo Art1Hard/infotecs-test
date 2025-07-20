@@ -1,54 +1,63 @@
 import useFetchUsers from "@src/lib/hooks/useFetchUsers";
 import { useState } from "react";
-import SortList from "../sort/SortList";
-import UserList from "./UserList";
 import { LIMIT } from "@lib/config";
-import { Pagination } from "@components/pagination";
+import { Pagination } from "@src/components/user/pagination";
+import {
+	useReactTable,
+	getCoreRowModel,
+	type SortingState,
+	getSortedRowModel,
+} from "@tanstack/react-table";
+import { TABLE_COLUMNS } from "@src/lib/constants";
+import UserRows from "./UserRows";
+import { UserHeader } from "./header";
 
 export default function UserTable() {
-	const [order, setOrder] = useState<Record<string, string>>({
-		type: "lastName",
-		order: "none",
-	});
+	const [sorting, setSorting] = useState<SortingState>([
+		{ id: "lastName", desc: false },
+	]);
 
 	const [skip, setSkip] = useState(0);
-	const { userData, isError, isLoading } = useFetchUsers(order, skip);
+	const { userData, isError, isLoading } = useFetchUsers(sorting, skip);
+
+	const table = useReactTable({
+		data: userData?.users ?? [],
+		columns: TABLE_COLUMNS,
+		columnResizeMode: "onChange",
+		getCoreRowModel: getCoreRowModel(),
+		getSortedRowModel: getSortedRowModel(),
+		manualSorting: true,
+		state: { sorting },
+		onSortingChange: setSorting,
+	});
+
+	if (isLoading) {
+		return <div>Загрузка!!!</div>;
+	}
 
 	if (isError) {
 		return <div>Произошла ошибка при получении данных!</div>;
 	}
 
 	if (!userData) {
-		return <div>Данных нет :(</div>;
+		return <div>Данные пока не пришли :(</div>;
 	}
 
 	return (
-		<table className="w-full max-w-[1400px] mx-auto bg-white border border-gray-200 rounded-lg">
-			<thead className="bg-gray-100 text-base">
-				<tr>
-					<SortList
-						externalOrderType={order.type}
-						isLoading={isLoading}
-						onSortChange={(type, order) => setOrder({ type, order })}
+		<div className="p-3 overflow-x-auto">
+			<table className="w-[1400px] mx-auto bg-white border border-gray-200 rounded-lg border-collapse">
+				<thead className="bg-gray-100 text-base">
+					<UserHeader headerGroup={table.getHeaderGroups()} />
+				</thead>
+				<tbody>
+					<UserRows rows={table.getRowModel().rows} />
+					<Pagination
+						totalPages={Math.ceil(userData.total / LIMIT)}
+						skip={skip}
+						onPageChange={(skip) => setSkip(skip)}
 					/>
-					<th className="py-3 px-6 text-center text-gray-700 font-semibold border-b border-gray-300">
-						Страна
-					</th>
-					<th className="py-3 px-6 text-center text-gray-700 font-semibold border-b border-gray-300">
-						Город
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<UserList users={userData.users} isLoading={isLoading} />
-				<Pagination
-					totalPages={Math.ceil(userData.total / LIMIT)}
-					currentPage={Math.floor(skip / LIMIT) + 1}
-					onPageChange={(page) => setSkip((page - 1) * LIMIT)}
-					onPageIncrement={() => setSkip(skip + LIMIT)}
-					onPageDecrement={() => setSkip(skip - LIMIT)}
-				/>
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	);
 }
