@@ -1,11 +1,22 @@
 import type { IUser } from "@src/lib/types/user";
 import { flexRender, type Row } from "@tanstack/react-table";
+import { Loading } from "@components/ui/states";
 
 interface UserListProps {
 	rows: Row<IUser>[];
+	isLoading: boolean;
 }
 
-const UserRows = ({ rows }: UserListProps) => {
+const UserRows = ({ rows, isLoading }: UserListProps) => {
+	if (isLoading)
+		return (
+			<tr>
+				<td colSpan={9} className="py-4 h-[700px]">
+					<Loading />
+				</td>
+			</tr>
+		);
+
 	if (rows.length <= 0)
 		return (
 			<tr>

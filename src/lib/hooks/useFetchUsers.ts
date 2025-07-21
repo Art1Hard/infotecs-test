@@ -1,5 +1,5 @@
 import type { IUserDataResponse } from "@src/lib/types/user";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LIMIT } from "@lib/config";
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 
@@ -46,7 +46,7 @@ const useFetchUsers = (
 	const [isError, setIsError] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const fetchUsers = async () => {
+	const fetchUsers = useCallback(async () => {
 		try {
 			setIsError(false);
 			setIsLoading(true);
@@ -62,14 +62,13 @@ const useFetchUsers = (
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [sorting, skip, filtering]);
 
 	useEffect(() => {
 		fetchUsers();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [sorting, skip, filtering]);
+	}, [fetchUsers]);
 
-	return { userData, isError, isLoading };
+	return { userData, isError, isLoading, fetchUsers };
 };
 
 export default useFetchUsers;

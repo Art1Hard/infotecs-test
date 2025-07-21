@@ -12,6 +12,7 @@ import {
 import { TABLE_COLUMNS } from "@src/lib/constants";
 import UserRows from "./UserRows";
 import { UserHeader } from "./header";
+import { Error } from "@components/ui/states";
 
 export default function UserTable() {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -19,10 +20,8 @@ export default function UserTable() {
 		{ id: "lastName", desc: false },
 	]);
 
-	console.log(columnFilters);
-
 	const [skip, setSkip] = useState(0);
-	const { userData, isError, isLoading } = useFetchUsers(
+	const { userData, fetchUsers, isError, isLoading } = useFetchUsers(
 		sorting,
 		columnFilters,
 		skip
@@ -49,16 +48,8 @@ export default function UserTable() {
 		},
 	});
 
-	// if (isLoading) {
-	// 	return <div>Загрузка!!!</div>;
-	// }
-
 	if (isError) {
-		return <div>Произошла ошибка при получении данных!</div>;
-	}
-
-	if (!userData) {
-		return <div>Данные пока не пришли :(</div>;
+		return <Error onClick={fetchUsers} />;
 	}
 
 	return (
@@ -68,12 +59,14 @@ export default function UserTable() {
 					<UserHeader headerGroup={table.getHeaderGroups()} />
 				</thead>
 				<tbody>
-					<UserRows rows={table.getRowModel().rows} />
-					<Pagination
-						totalPages={Math.ceil(userData.total / LIMIT)}
-						skip={skip}
-						onPageChange={(skip) => setSkip(skip)}
-					/>
+					<UserRows rows={table.getRowModel().rows} isLoading={isLoading} />
+					{userData && (
+						<Pagination
+							totalPages={Math.ceil(userData.total / LIMIT)}
+							skip={skip}
+							onPageChange={(skip) => setSkip(skip)}
+						/>
+					)}
 				</tbody>
 			</table>
 		</div>
