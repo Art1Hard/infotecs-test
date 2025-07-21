@@ -1,13 +1,14 @@
 import type { IUser } from "@src/lib/types/user";
 import { flexRender, type Row } from "@tanstack/react-table";
-import { Loading } from "@components/ui/states";
+import { Loading } from "@components/ui/status";
 
 interface UserListProps {
 	rows: Row<IUser>[];
 	isLoading: boolean;
+	onClickRow?: (userId: number) => void;
 }
 
-const UserRows = ({ rows, isLoading }: UserListProps) => {
+const UserRows = ({ rows, isLoading, onClickRow }: UserListProps) => {
 	if (isLoading)
 		return (
 			<tr>
@@ -29,7 +30,8 @@ const UserRows = ({ rows, isLoading }: UserListProps) => {
 	return rows.map((row) => (
 		<tr
 			key={row.id}
-			className="border-gray-200 hover:bg-gray-50 border-b text-sm">
+			className="border-gray-200 hover:bg-gray-50 border-b text-sm cursor-pointer"
+			onClick={() => onClickRow && onClickRow(row.original.id)}>
 			{row.getVisibleCells().map((cell) => (
 				<td key={cell.id} className="py-1 px-1 break-all">
 					{flexRender(cell.column.columnDef.cell, cell.getContext())}

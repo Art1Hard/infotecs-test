@@ -2,6 +2,8 @@ import type { IUserDataResponse } from "@src/lib/types/user";
 import { useCallback, useEffect, useState } from "react";
 import { LIMIT } from "@lib/config";
 import type { ColumnFiltersState, SortingState } from "@tanstack/react-table";
+import { USER_API_URL } from "@src/lib/constants";
+import useStatus from "../useStatus";
 
 const getUrlWithParams = (
 	limit: number,
@@ -10,9 +12,7 @@ const getUrlWithParams = (
 	filtering: ColumnFiltersState
 ): string => {
 	const baseUrl =
-		filtering.length > 0
-			? `https://dummyjson.com/users/filter`
-			: `https://dummyjson.com/users`;
+		filtering.length > 0 ? `${USER_API_URL}/filter` : USER_API_URL;
 
 	const params = new URLSearchParams();
 
@@ -43,13 +43,19 @@ const useFetchUsers = (
 	skip: number
 ) => {
 	const [userData, setUserData] = useState<IUserDataResponse | null>(null);
-	const [isError, setIsError] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const {
+		isLoading,
+		isError,
+		enableLoading,
+		disableLoading,
+		enableError,
+		disableError,
+	} = useStatus();
 
 	const fetchUsers = useCallback(async () => {
 		try {
-			setIsError(false);
-			setIsLoading(true);
+			disableError();
+			enableLoading();
 
 			const url = getUrlWithParams(LIMIT, skip, sorting, filtering);
 			const response = await fetch(url);
@@ -58,10 +64,11 @@ const useFetchUsers = (
 			setUserData(data);
 		} catch (error) {
 			console.error("Error fetching users: ", error);
-			setIsError(true);
+			enableError();
 		} finally {
-			setIsLoading(false);
+			disableLoading();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [sorting, skip, filtering]);
 
 	useEffect(() => {

@@ -1,4 +1,4 @@
-import useFetchUsers from "@src/lib/hooks/useFetchUsers";
+import useFetchUsers from "@src/lib/hooks/user/useFetchUsers";
 import { useState } from "react";
 import { LIMIT } from "@lib/config";
 import { Pagination } from "@src/components/user/pagination";
@@ -12,9 +12,14 @@ import {
 import { TABLE_COLUMNS } from "@src/lib/constants";
 import UserRows from "./UserRows";
 import { UserHeader } from "./header";
-import { Error } from "@components/ui/states";
+import { Error } from "@components/ui/status";
+import useModal from "@src/lib/hooks/useModal";
+import UserDetail from "./UserDetail";
 
 export default function UserTable() {
+	const [isModalOpen, openModal, closeModal] = useModal();
+	const [userId, setUserId] = useState<number>();
+
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([
 		{ id: "lastName", desc: false },
@@ -54,12 +59,24 @@ export default function UserTable() {
 
 	return (
 		<div className="p-3 overflow-x-auto">
+			<UserDetail
+				userId={userId}
+				isModalOpen={isModalOpen}
+				closeModal={closeModal}
+			/>
 			<table className="w-[1400px] mx-auto bg-white border border-gray-200 rounded-lg border-collapse">
 				<thead className="bg-gray-100 text-base">
 					<UserHeader headerGroup={table.getHeaderGroups()} />
 				</thead>
 				<tbody>
-					<UserRows rows={table.getRowModel().rows} isLoading={isLoading} />
+					<UserRows
+						rows={table.getRowModel().rows}
+						isLoading={isLoading}
+						onClickRow={(userId) => {
+							openModal();
+							setUserId(userId);
+						}}
+					/>
 					{userData && (
 						<Pagination
 							totalPages={Math.ceil(userData.total / LIMIT)}
