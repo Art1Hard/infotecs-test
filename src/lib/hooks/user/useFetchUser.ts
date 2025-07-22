@@ -37,7 +37,7 @@ const useFetchUser = (id: number | undefined) => {
 		if (id) fetchUser();
 	}, [id, fetchUser]);
 
-	return { user, isLoading, isError };
+	return { user, fetchUser, isLoading, isError };
 };
 
 export default useFetchUser;

@@ -1,8 +1,17 @@
 import type { ButtonHTMLAttributes } from "react";
+import cn from "clsx";
 
-const Error = ({ ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => {
+interface ErrorProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+	rootClassName?: string;
+}
+
+const Error = ({ rootClassName, ...props }: ErrorProps) => {
 	return (
-		<div className="flex flex-col items-center justify-center gap-2 py-10 text-red-600 h-screen">
+		<div
+			className={cn(
+				"flex flex-col items-center justify-center gap-2 py-10 text-red-600",
+				rootClassName
+			)}>
 			<svg
 				className="w-6 h-6 text-red-500"
 				fill="none"
