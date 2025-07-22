@@ -1,69 +1,56 @@
-# React + TypeScript + Vite
+# Таблица пользователей
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📋 Описание
 
-Currently, two official plugins are available:
+Приложение отображает таблицу с информацией о пользователях, загружаемой с помощью HTTP-запросов. Есть возможность сортировки, фильтрации, постраничной навигации и просмотра подробной информации о пользователе в модальном окне.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Данные берутся с открытого API: [https://dummyjson.com/docs/users](https://dummyjson.com/docs/users)
 
-## Expanding the ESLint configuration
+## 🎯 Основные функции
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Таблица с данными пользователей
+- Сортировка по:
+  - ФИО (фамилия, имя, отчество)
+  - Возрасту
+  - Полу
+  - Номеру телефона
+    
+  Каждое поле имеет три режима сортировки: по возрастанию, по убыванию, без сортировки.
+- Колонки таблицы:
+  - Фамилия
+  - Имя
+  - Отчество
+  - Возраст
+  - Пол
+  - Телефон
+  - Email
+  - Страна
+  - Город
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ➕ Дополнительные функции
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Фильтрация данных по полям таблицы
+- Постраничная навигация
+- Модальное окно с подробной информацией о пользователе:
+  - ФИО
+  - Возраст
+  - Адрес
+  - Рост, вес
+  - Телефон, email
+  - Аватар
+- Обработка ошибок при загрузке данных
+- Изменение ширины колонок (минимум — 50px)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Технологии
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- React
+- TypeScript
+- Tailwind CSS
+- Fetch API
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Установка и запуск
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+yarn install
+yarn dev
 ```
