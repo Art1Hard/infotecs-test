@@ -43,6 +43,7 @@
 
 ## 🛠️ Технологии
 
+- Vite
 - React
 - TypeScript
 - Tailwind CSS
